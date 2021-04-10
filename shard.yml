@@ -4,6 +4,10 @@ version: 0.1.0
 authors:
   - Nick Clifford <nick@nickclifford.me>
 
+dependencies:
+  x_do:
+    github: woodruffw/x_do.cr
+
 targets:
   gkeybind:
     main: src/gkeybind.cr
