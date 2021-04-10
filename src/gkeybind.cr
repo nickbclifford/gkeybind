@@ -1,23 +1,36 @@
+require "option_parser"
 require "yaml"
 
 require "./config"
 require "./daemon"
 
-module Gkeybind
-  VERSION = "0.1.0"
-end
+config_path = nil
 
-File.open("#{ENV["HOME"]}/.config/gkeybind.yml") do |f|
-  config = Gkeybind::Config.from_yaml(f)
-
-  # TODO: better filtering
-  if kv = config.actions.find {|(k, _)| !k.matches?(/^g\d+$/)}
-    raise Exception.new(%(Found binding for "#{kv[0]}", only G-key bindings currently supported))
+OptionParser.parse do |parser|
+  parser.banner = "Usage: gkeybind [options]"
+  parser.on("-c FILE", "--config=FILE", "Specifies the config file to use") do |arg|
+    config_path = arg
   end
-
-  daemon = Gkeybind::Daemon.new(config)
-
-  Signal::INT.trap { daemon.stop }
-
-  daemon.start
+  parser.on("-h", "--help", "Shows this help") do
+    puts parser
+    exit
+  end
 end
+
+# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+base_dirs = (ENV["XDG_CONFIG_DIRS"]? || "/etc/xdg").split(':').unshift(ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config")
+
+config_path ||= base_dirs.map {|d| "#{d}/gkeybind.yml"}.find {|p| File.exists?(p)}
+abort "No config file found!" unless config_path
+
+begin
+  config = File.open(config_path.not_nil!) {|f| Gkeybind::Config.from_yaml(f)}
+rescue err : YAML::ParseException
+  abort "Error parsing config! #{err}"
+end
+
+daemon = Gkeybind::Daemon.new(config)
+
+Signal::INT.trap { daemon.stop }
+
+daemon.start
