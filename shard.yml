@@ -5,6 +5,8 @@ authors:
   - Nick Clifford <nick@nickclifford.me>
 
 dependencies:
+  keyleds:
+    github: nickbclifford/keyleds.cr
   x_do:
     github: woodruffw/x_do.cr
 

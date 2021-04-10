@@ -1,0 +1,46 @@
+require "bit_array"
+require "keyleds"
+require "x_do"
+
+require "./config"
+
+class Gkeybind::Daemon
+  APP_ID = 1_u8
+
+  @config : Config
+  @device : Keyleds::Device
+  @last_keys : BitArray
+  @stopped = false
+  @xdo = XDo.new
+
+  def initialize(@config)
+    @device = Keyleds::Device.new(config.device_path, APP_ID)
+    @last_keys = BitArray.new(@device.gkeys_count.to_i)
+  end
+
+  def start
+    @device.on_gkey do |type, keys|
+      next unless type.gkey?
+
+      @last_keys.zip(keys).each_with_index do |(last, current), i|
+        # process keydown events
+        if !last && current && (actions = @config.actions["g#{i + 1}"]?)
+          spawn do
+            actions.each(&.run(@xdo.active_window))
+          end
+        end
+      end
+
+      @last_keys = keys
+    end
+
+    until @stopped
+      @device.flush
+      Fiber.yield
+    end
+  end
+
+  def stop
+    @stopped = true
+  end
+end
