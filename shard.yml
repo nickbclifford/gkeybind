@@ -1,0 +1,13 @@
+name: gkeybind
+version: 0.1.0
+
+authors:
+  - Nick Clifford <nick@nickclifford.me>
+
+targets:
+  gkeybind:
+    main: src/gkeybind.cr
+
+crystal: 1.0.0
+
+license: GPLv3
