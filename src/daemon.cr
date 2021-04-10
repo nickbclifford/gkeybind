@@ -19,6 +19,7 @@ class Gkeybind::Daemon
   end
 
   def start
+    @device.custom_gkeys(true)
     @device.on_gkey do |type, keys|
       next unless type.gkey?
 
@@ -38,6 +39,9 @@ class Gkeybind::Daemon
       @device.flush
       Fiber.yield
     end
+  ensure
+    @device.custom_gkeys(false)
+    @device.close
   end
 
   def stop
