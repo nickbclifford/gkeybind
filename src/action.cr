@@ -23,7 +23,7 @@ module Gkeybind
   end
 
   struct Delay < Action
-    getter delay : UInt32
+    getter delay : UInt32 | Float64
 
     def run(window)
       sleep delay.seconds
