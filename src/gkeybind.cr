@@ -31,6 +31,9 @@ end
 
 daemon = Gkeybind::Daemon.new(config)
 
-Signal::INT.trap { daemon.stop }
+trap = ->(signal : Signal){ daemon.stop }
+
+Signal::INT.trap(&trap)
+Signal::TERM.trap(&trap)
 
 daemon.start

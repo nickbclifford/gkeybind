@@ -37,7 +37,7 @@ class Gkeybind::Daemon
 
     until @stopped
       @device.flush
-      Fiber.yield
+      sleep 5.milliseconds
     end
   ensure
     @device.custom_gkeys(false)

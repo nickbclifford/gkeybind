@@ -9,13 +9,12 @@ Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyl
 ## Installation
 
 Run `make` to build, and `sudo make install` to install globally.
-The `PREFIX` make variable is supported to change the installation location (installs to `/usr/local` by default).
+The `PREFIX` variable is supported to change the installation location (installs to `/usr/local` by default).
 
 ## Usage
 
-The `gkeybind` executable is designed to be run continuously as a daemon.
-
-TODO: systemd service
+The `gkeybind` executable is designed to be run continuously as a daemon. To start it automatically on desktop startup,
+run `sudo make autostart`.
 
 ### Config
 
