@@ -7,8 +7,8 @@ authors:
 dependencies:
   keyleds:
     github: nickbclifford/keyleds.cr
-  x_do:
-    github: woodruffw/x_do.cr
+  evdev:
+    github: nickbclifford/evdev.cr
 
 targets:
   gkeybind:

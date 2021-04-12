@@ -1,4 +1,3 @@
-require "x_do"
 require "yaml"
 
 module Gkeybind
@@ -6,7 +5,7 @@ module Gkeybind
     include YAML::Serializable
     include YAML::Serializable::Strict
 
-    abstract def run(window : XDo::Window)
+    abstract def run
 
     # Fake deserialization polymorphism
     def self.new(ctx : YAML::ParseContext, node : YAML::Nodes::Node)
@@ -25,7 +24,7 @@ module Gkeybind
   struct Delay < Action
     getter delay : UInt32 | Float64
 
-    def run(window)
+    def run
       sleep delay.seconds
     end
   end
@@ -33,23 +32,23 @@ module Gkeybind
   struct LiteralText < Action
     getter text : String
 
-    def run(window)
-      window.type(text)
+    def run
+      # TODO
     end
   end
 
   struct Keys < Action
     getter keys : String
 
-    def run(window)
-      window.keys(keys)
+    def run
+      # TODO
     end
   end
 
   struct Command < Action
     getter command : String
 
-    def run(window)
+    def run
       Process.new(command, shell: true)
     end
   end

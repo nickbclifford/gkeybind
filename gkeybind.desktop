@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=gkeybind
-NoDisplay=true
-Comment=Logitech key binding daemon
-Exec=/usr/local/bin/gkeybind
-Terminal=false

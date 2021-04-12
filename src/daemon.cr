@@ -1,6 +1,5 @@
 require "bit_array"
 require "keyleds"
-require "x_do"
 
 require "./config"
 
@@ -11,7 +10,6 @@ class Gkeybind::Daemon
   @device : Keyleds::Device
   @last_keys : BitArray
   @stopped = false
-  @xdo = XDo.new
 
   def initialize(@config)
     @device = Keyleds::Device.new(config.device_path, APP_ID)
@@ -27,7 +25,7 @@ class Gkeybind::Daemon
         # process keydown events
         if !last && current && (actions = @config.actions["g#{i + 1}"]?)
           spawn do
-            actions.each(&.run(@xdo.active_window))
+            actions.each(&.run)
           end
         end
       end

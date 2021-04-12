@@ -4,7 +4,7 @@ A Linux utility for binding custom behavior to Logitech keyboards.
 
 ## Dependencies
 
-Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyleds/keyleds), and [xdotool](https://www.semicomplete.com/projects/xdotool/).
+Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyleds/keyleds), and [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/).
 
 ## Installation
 
@@ -13,17 +13,13 @@ The `PREFIX` variable is supported to change the installation location (installs
 
 ## Usage
 
-The `gkeybind` executable is designed to be run continuously as a daemon. To start it automatically on desktop startup,
-run `sudo make autostart`.
+TODO
 
 ### Config
 
 `gkeybind` requires a config file, `gkeybind.yml`, in order to configure custom key behavior.
 
-In order, the following are checked for `gkeybind.yml` files:
-- Any file directly pointed to by the `-c`/`--config` command line switch, if present
-- `$XDG_CONFIG_HOME`, or `$HOME/.config`
-- `$XDG_CONFIG_DIRS` (a list of directories separated by colons), or `/etc/xdg`
+TODO
 
 The file schema is as follows:
 ```yaml
