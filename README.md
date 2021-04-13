@@ -4,7 +4,7 @@ A Linux utility for binding custom behavior to Logitech keyboards.
 
 ## Dependencies
 
-Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyleds/keyleds), [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/), and [libxkbcommon](https://xkbcommon.org/).
+Requires [Crystal](https://crystal-lang.org/), libkeyleds from [keyleds](https://github.com/keyleds/keyleds), [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/), and [libxkbcommon](https://xkbcommon.org/).
 
 ## Installation
 
