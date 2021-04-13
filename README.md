@@ -2,6 +2,12 @@
 
 A Linux utility for binding custom behavior to Logitech keyboards.
 
+## Why not [g910-gkey-macro-support](https://github.com/JSubelj/g910-gkey-macro-support)?
+
+- gkeybind supports *all* keyboard layouts, whereas g910-gkey-macro-support only supports English, French, and Slovenian.
+- gkeybind is more customizable and allows you to assign multiple actions to a single key, as well as adding delay actions.
+- gkeybind is actively maintained and easy to contribute to.
+
 ## Dependencies
 
 Requires [Crystal](https://crystal-lang.org/), libkeyleds from [keyleds](https://github.com/keyleds/keyleds), [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/), and [libxkbcommon](https://xkbcommon.org/).
