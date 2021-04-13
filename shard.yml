@@ -10,6 +10,9 @@ dependencies:
   evdev:
     github: nickbclifford/evdev.cr
 
+libraries:
+  libxkbcommon: ">= 0.3.1"
+
 targets:
   gkeybind:
     main: src/gkeybind.cr

@@ -8,7 +8,7 @@ module Gkeybind
         uinput.write_event(key, 1)
       end
       uinput.write_event(Evdev::Codes::Syn::Report, 0)
-      keys.each do |key|
+      keys.reverse.each do |key|
         uinput.write_event(key, 0)
       end
       uinput.write_event(Evdev::Codes::Syn::Report, 0)

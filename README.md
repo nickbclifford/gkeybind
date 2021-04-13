@@ -4,7 +4,7 @@ A Linux utility for binding custom behavior to Logitech keyboards.
 
 ## Dependencies
 
-Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyleds/keyleds), and [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/).
+Requires [Crystal](https://crystal-lang.org/), [keyleds](https://github.com/keyleds/keyleds), [libevdev](https://www.freedesktop.org/wiki/Software/libevdev/), and [libxkbcommon](https://xkbcommon.org/).
 
 ## Installation
 
@@ -27,26 +27,33 @@ The file schema is as follows:
 # By default, gkeybind will use the first valid device found. Specify this field if disambiguation is necessary.
 device_path: /dev/hidraw1
 
+# By default, gkeybind will use the system default layout. Specify if detection does not work.
+keyboard_layout: us
+
+# By default, gkeybind will poll for new G-key events every 10ms to keep idle CPU usage low. Adjust to your preference.
+poll_rate: 10
+
 actions:
     # Currently, only G-keys are supported for binding.
     g1: 
         # Actions must be entered as a list.
         # They are executed sequentially upon keydown.
 
-        # Types literal text into the current active window.
-        # TODO
-        - text: Hello world!
+        # Types literal text.
+        # Optionally, specify the delay in ms between each char being entered in case your applications get overwhelmed.
+        - text: Hello world!  
+          char_delay: 20
+          
         # Runs an arbitrary shell command.
         - command: echo test > file.txt
+
     g2:
         # Waits for a number of seconds. (decimals supported)
         - delay: 1
-        # Sends a direct sequence of keys.
-        # Key names correspond to the names listed here: https://nickbclifford.github.io/evdev.cr/Evdev/Codes/Key.html
-        # Some keys have shortcut names:
-        # - Leftshift, Leftctrl, Leftalt can be written as Shift, Ctrl, Alt
-        # - Key{0-9} can be written as just the digit
-        - keys: Shift+F6
+
+        # Sends a direct sequence of keys. (case-sensitive, separated by +)
+        # Use the `xkbcli` tool to find specific key names.
+        - keys: Shift_L+F6
 ```
 
 Requests for more action types are welcome!

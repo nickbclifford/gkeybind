@@ -3,6 +3,7 @@ require "evdev"
 require "keyleds"
 
 require "./config"
+require "./key_lookup"
 
 APP_ID = 1_u8
 
@@ -30,6 +31,16 @@ class Gkeybind::Daemon
   @uinput : Evdev::UinputDevice
 
   def initialize(@config)
+    lookup = KeyLookup.new(@config.keyboard_layout)
+
+    @config.actions.each_value do |actions|
+      actions.each do |a|
+        if a.responds_to?(:init)
+          a.init(lookup)
+        end
+      end
+    end
+
     hidraw, @keyleds = get_keyleds(@config.device_path)
     @last_keys = BitArray.new(@keyleds.gkeys_count.to_i)
 
@@ -58,7 +69,7 @@ class Gkeybind::Daemon
 
     until @stopped
       @keyleds.flush
-      sleep 5.milliseconds
+      sleep @config.poll_rate.milliseconds
     end
   ensure
     @keyleds.custom_gkeys(false)

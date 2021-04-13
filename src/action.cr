@@ -1,10 +1,11 @@
 require "evdev"
 require "yaml"
 
+require "./key_lookup"
 require "./utils"
 
 module Gkeybind
-  abstract struct Action
+  abstract class Action
     include YAML::Serializable
     include YAML::Serializable::Strict
 
@@ -24,7 +25,7 @@ module Gkeybind
     end
   end
 
-  struct Delay < Action
+  class Delay < Action
     getter delay : UInt32 | Float64
 
     def run(uinput)
@@ -32,32 +33,43 @@ module Gkeybind
     end
   end
 
-  struct LiteralText < Action
+  class LiteralText < Action
     getter text : String
+    getter key_delay = 20
+
+    @[YAML::Field(ignore: true)]
+    @keys = [] of Array(Key)
+
+    # Initialize on startup to avoid recalculating lookups every time
+    def init(lookup : KeyLookup)
+      @keys = text.chars.map {|c| lookup.from_char(c)}
+    end
 
     def run(uinput)
-      # TODO
+      @keys.each do |key|
+        sleep key_delay.milliseconds
+        Utils.keys_updown(uinput, key)
+      end
     end
   end
 
-  struct Keys < Action
+  class Keys < Action
     getter keys : String
 
+    @[YAML::Field(ignore: true)]
+    @codes = [] of Key
+
+    # Initialize on startup in case we have bad names, then they'll fail fast
+    def init(lookup : KeyLookup)
+      @codes = keys.split('+').flat_map {|n| lookup.from_name(n)}
+    end
+
     def run(uinput)
-      codes = keys.split('+').map do |str|
-        case str
-        when /^\d$/
-          str = "Key#{str}"
-        when "Shift", "Ctrl", "Alt"
-          str = "Left#{str.downcase}"
-        end
-        Key.parse(str)
-      end
-      Utils.keys_updown(uinput, codes)
+      Utils.keys_updown(uinput, @codes)
     end
   end
 
-  struct Command < Action
+  class Command < Action
     getter command : String
 
     def run(uinput)
