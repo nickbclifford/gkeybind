@@ -6,13 +6,20 @@ require "./config"
 
 APP_ID = 1_u8
 
-private def get_device(config_path = nil)
+private def get_keyleds(config_path = nil)
   search = Dir.glob("/dev/hidraw*")
   search.unshift(config_path) if config_path
   search.each do |path|
-    return Keyleds::Device.new(path, APP_ID) rescue next
+    # If invalid device, try the next path
+    return {path, Keyleds::Device.new(path, APP_ID)} rescue next
   end
   abort "No supported devices found!"
+end
+
+private def get_event(hidraw_path)
+  File.read("/sys/class/hidraw/#{hidraw_path.split('/')[2]}/device/uevent") =~ /^HID_UNIQ=(.*?)$/m
+  # Regex matches kernel ID, glob to find event handle (will always exist)
+  Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]
 end
 
 class Gkeybind::Daemon
@@ -23,10 +30,11 @@ class Gkeybind::Daemon
   @uinput : Evdev::UinputDevice
 
   def initialize(@config)
-    @keyleds = get_device(@config.device_path)
+    hidraw, @keyleds = get_keyleds(@config.device_path)
     @last_keys = BitArray.new(@keyleds.gkeys_count.to_i)
 
-    evdev = Evdev::Device.new
+    # File handle is only necessary to copy attributes, can safely close immediately
+    evdev = File.open(get_event(hidraw)) {|f| Evdev::Device.from_file(f)}
     evdev.name = "gkeybind virtual device"
     @uinput = Evdev::UinputDevice.new(evdev)
   end
@@ -40,7 +48,7 @@ class Gkeybind::Daemon
         # process keydown events
         if !last && current && (actions = @config.actions["g#{i + 1}"]?)
           spawn do
-            actions.each(&.run)
+            actions.each(&.run(@uinput))
           end
         end
       end

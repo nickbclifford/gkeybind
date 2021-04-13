@@ -2,7 +2,7 @@ version: 2.0
 shards:
   evdev:
     git: https://github.com/nickbclifford/evdev.cr.git
-    version: 0.1.0+git.commit.74b1a95deaefe1e33915043d8942d1c2ef11970d
+    version: 0.1.0+git.commit.7b338b260ddfb3b6e8ec61b1f4b3b64e88734e5f
 
   keyleds:
     git: https://github.com/nickbclifford/keyleds.cr.git

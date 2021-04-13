@@ -32,11 +32,21 @@ actions:
     g1: 
         # Actions must be entered as a list.
         # They are executed sequentially upon keydown.
-        - text: Hello world!              # Types literal text into the current active window.
-        - command: echo test > ~/file.txt # Runs an arbitrary shell command.
+
+        # Types literal text into the current active window.
+        # TODO
+        - text: Hello world!
+        # Runs an arbitrary shell command.
+        - command: echo test > file.txt
     g2:
-        - delay: 1                        # Waits for a number of seconds. (decimals supported)
-        - keys: Shift+F6                  # Sends keystrokes to the current active window. Uses xdotool syntax.
+        # Waits for a number of seconds. (decimals supported)
+        - delay: 1
+        # Sends a direct sequence of keys.
+        # Key names correspond to the names listed here: https://nickbclifford.github.io/evdev.cr/Evdev/Codes/Key.html
+        # Some keys have shortcut names:
+        # - Leftshift, Leftctrl, Leftalt can be written as Shift, Ctrl, Alt
+        # - Key{0-9} can be written as just the digit
+        - keys: Shift+F6
 ```
 
 Requests for more action types are welcome!
