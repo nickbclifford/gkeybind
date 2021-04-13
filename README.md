@@ -11,6 +11,8 @@ Requires [Crystal](https://crystal-lang.org/), libkeyleds from [keyleds](https:/
 Run `make` to build, and `sudo make install` to install globally.
 The `PREFIX` variable is supported to change the installation location (installs to `/usr/local` by default).
 
+If you are an Arch Linux user, gkeybind is available on the [AUR](https://aur.archlinux.org/packages/gkeybind/).
+
 ## Usage
 
 gkeybind requires root permissions in order to create its virtual keyboard device. It also is designed to run continuously
