@@ -12,3 +12,4 @@ clean:
 .PHONY: install
 install: bin/gkeybind
 	install -Dm755 bin/gkeybind $(PREFIX)/bin
+	install -Dm644 default_config.yml $(CONFIG_PREFIX)/etc/gkeybind.yml

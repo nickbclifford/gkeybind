@@ -1,0 +1,7 @@
+actions:
+  g1:
+    - text: Hello, world!
+  g2:
+    - text: You've installed gkeybind correctly!
+  g3:
+    - text: Modify /etc/gkeybind.yml to set your own bindings.
