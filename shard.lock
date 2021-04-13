@@ -1,10 +1,10 @@
 version: 2.0
 shards:
+  evdev:
+    git: https://github.com/nickbclifford/evdev.cr.git
+    version: 0.1.0+git.commit.74b1a95deaefe1e33915043d8942d1c2ef11970d
+
   keyleds:
     git: https://github.com/nickbclifford/keyleds.cr.git
     version: 1.0.0
-
-  x_do:
-    git: https://github.com/woodruffw/x_do.cr.git
-    version: 0.8.3
 

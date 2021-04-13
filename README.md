@@ -24,6 +24,7 @@ TODO
 The file schema is as follows:
 ```yaml
 # The desired device's HID file path.
+# By default, gkeybind will use the first valid device found. Specify this field if disambiguation is necessary.
 device_path: /dev/hidraw1
 
 actions:

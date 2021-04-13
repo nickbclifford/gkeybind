@@ -1,24 +1,39 @@
 require "bit_array"
+require "evdev"
 require "keyleds"
 
 require "./config"
 
-class Gkeybind::Daemon
-  APP_ID = 1_u8
+APP_ID = 1_u8
 
+private def get_device(config_path = nil)
+  search = Dir.glob("/dev/hidraw*")
+  search.unshift(config_path) if config_path
+  search.each do |path|
+    return Keyleds::Device.new(path, APP_ID) rescue next
+  end
+  abort "No supported devices found!"
+end
+
+class Gkeybind::Daemon
   @config : Config
-  @device : Keyleds::Device
+  @keyleds : Keyleds::Device
   @last_keys : BitArray
   @stopped = false
+  @uinput : Evdev::UinputDevice
 
   def initialize(@config)
-    @device = Keyleds::Device.new(config.device_path, APP_ID)
-    @last_keys = BitArray.new(@device.gkeys_count.to_i)
+    @keyleds = get_device(@config.device_path)
+    @last_keys = BitArray.new(@keyleds.gkeys_count.to_i)
+
+    evdev = Evdev::Device.new
+    evdev.name = "gkeybind virtual device"
+    @uinput = Evdev::UinputDevice.new(evdev)
   end
 
   def start
-    @device.custom_gkeys(true)
-    @device.on_gkey do |type, keys|
+    @keyleds.custom_gkeys(true)
+    @keyleds.on_gkey do |type, keys|
       next unless type.gkey?
 
       @last_keys.zip(keys).each_with_index do |(last, current), i|
@@ -34,12 +49,12 @@ class Gkeybind::Daemon
     end
 
     until @stopped
-      @device.flush
+      @keyleds.flush
       sleep 5.milliseconds
     end
   ensure
-    @device.custom_gkeys(false)
-    @device.close
+    @keyleds.custom_gkeys(false)
+    @keyleds.close
   end
 
   def stop
