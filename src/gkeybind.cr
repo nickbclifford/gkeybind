@@ -4,7 +4,7 @@ require "yaml"
 require "./config"
 require "./daemon"
 
-config_path = nil
+config_path = "/etc/gkeybind.yml"
 
 OptionParser.parse do |parser|
   parser.banner = "Usage: gkeybind [options]"
@@ -17,14 +17,8 @@ OptionParser.parse do |parser|
   end
 end
 
-# https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-base_dirs = (ENV["XDG_CONFIG_DIRS"]? || "/etc/xdg").split(':').unshift(ENV["XDG_CONFIG_HOME"]? || "#{ENV["HOME"]}/.config")
-
-config_path ||= base_dirs.map {|d| "#{d}/gkeybind.yml"}.find {|p| File.exists?(p)}
-abort "No config file found!" unless config_path
-
 begin
-  config = File.open(config_path.not_nil!) {|f| Gkeybind::Config.from_yaml(f)}
+  config = File.open(config_path) {|f| Gkeybind::Config.from_yaml(f)}
 rescue err : YAML::ParseException
   abort "Error parsing config! #{err}"
 end

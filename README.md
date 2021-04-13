@@ -17,9 +17,10 @@ TODO
 
 ### Config
 
-`gkeybind` requires a config file, `gkeybind.yml`, in order to configure custom key behavior.
+gkeybind requires a config file, `gkeybind.yml`, in order to configure custom key behavior.
 
-TODO
+The default config location is `/etc/gkeybind.yml`. However, if the `-c`/`--config` command line switch is provided,
+it will use the path given as an argument.
 
 The file schema is as follows:
 ```yaml
