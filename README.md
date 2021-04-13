@@ -13,7 +13,18 @@ The `PREFIX` variable is supported to change the installation location (installs
 
 ## Usage
 
-TODO
+gkeybind requires root permissions in order to create its virtual keyboard device. It also is designed to run continuously
+as a daemon.
+
+### systemd
+
+If your particular Linux distro uses `systemd`, you can install the provided `gkeybind.service` file to automatically start
+gkeybind on boot and manage it with `systemctl`.
+
+```
+$ sudo cp gkeybind.service /usr/lib/systemd/system
+$ sudo systemctl enable gkeybind.service
+```
 
 ### Config
 

@@ -1,0 +1,9 @@
+[Unit]
+Description=Logitech key remapping daemon
+Documentation=https://github.com/nickbclifford/gkeybind
+
+[Service]
+ExecStart=/usr/local/bin/gkeybind
+
+[Install]
+WantedBy=multi-user.target
