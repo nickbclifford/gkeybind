@@ -3,12 +3,14 @@ Description=Logitech key remapping daemon
 Documentation=https://github.com/nickbclifford/gkeybind
 
 StartLimitIntervalSec=500
-StartLimitBurst=5
+StartLimitBurst=3
 
 [Service]
 ExecStart=gkeybind
 # In case devices aren't initialized when the service starts
-Restart=on-failure
+# Exit code 1 is for internal and system errors
+# User/input errors will have different codes, we don't want to restart on those
+RestartForceExitStatus=1
 RestartSec=10s
 
 [Install]

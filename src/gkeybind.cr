@@ -15,12 +15,19 @@ OptionParser.parse do |parser|
     puts parser
     exit
   end
+  parser.invalid_option do |flag|
+    STDERR.puts "ERROR: #{flag} is not a valid option."
+    STDERR.puts parser
+    exit 64 # EX_USAGE
+  end
 end
 
 begin
   config = File.open(config_path) {|f| Gkeybind::Config.from_yaml(f)}
 rescue err : YAML::ParseException
-  abort "Error parsing config! #{err}"
+  abort "Error parsing config! #{err}", 65 # EX_DATAERR
+rescue File::NotFoundError
+  abort "Unable to open config file #{config_path}!", 66 # EX_NOINPUT
 end
 
 daemon = Gkeybind::Daemon.new(config)

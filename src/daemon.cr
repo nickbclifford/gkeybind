@@ -19,8 +19,9 @@ end
 
 private def get_event(hidraw_path)
   File.read("/sys/class/hidraw/#{hidraw_path.split('/')[2]}/device/uevent") =~ /^HID_UNIQ=(.*?)$/m
-  # Regex matches kernel ID, glob to find event handle (will always exist)
-  Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]
+  # Regex matches kernel ID, glob to find event handle
+  Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]? ||
+    abort "Could not find keyboard event handle, is your device initialized correctly?"
 end
 
 class Gkeybind::Daemon

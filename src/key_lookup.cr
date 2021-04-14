@@ -91,7 +91,7 @@ class Gkeybind::KeyLookup
 
   def from_name(name : String)
     sym = LibXKBCommon.keysym_from_name(name, LibXKBCommon::KeysymFlags::NoFlags)
-    abort "Invalid key name #{name}!" if sym == 0
+    abort "Invalid key name #{name}!", 65 if sym == 0
     @hash[sym]
   end
 
