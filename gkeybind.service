@@ -2,8 +2,14 @@
 Description=Logitech key remapping daemon
 Documentation=https://github.com/nickbclifford/gkeybind
 
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
 [Service]
 ExecStart=gkeybind
+# In case devices aren't initialized when the service starts
+Restart=on-failure
+RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
