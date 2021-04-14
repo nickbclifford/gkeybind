@@ -2,6 +2,8 @@ CRFLAGS ?= --release
 SHARDS ?= shards
 PREFIX ?= /usr/local
 
+CONFIG_PATH := $(CONFIG_PREFIX)/etc/gkeybind.yml
+
 bin/gkeybind: shard.yml src/*.cr
 	$(SHARDS) build $(CRFLAGS)
 
@@ -12,4 +14,4 @@ clean:
 .PHONY: install
 install: bin/gkeybind
 	install -Dm755 bin/gkeybind $(PREFIX)/bin/gkeybind
-	install -Dm644 default_config.yml $(CONFIG_PREFIX)/etc/gkeybind.yml
+	[ -f $(CONFIG_PATH) ] || install -Dm644 default_config.yml $(CONFIG_PATH)
