@@ -1,4 +1,6 @@
 require "bit_array"
+require "log"
+
 require "evdev"
 require "keyleds"
 
@@ -13,6 +15,7 @@ private def get_keyleds(config_path = nil)
   search = Dir.glob("/dev/hidraw*")
   search.unshift(config_path) if config_path
   search.each do |path|
+    Log.debug { "Checking device #{path}" }
     # If invalid device, try the next path
     device = Keyleds::Device.new(path, APP_ID) rescue next
     device.feature_count.times do |i|
@@ -20,14 +23,19 @@ private def get_keyleds(config_path = nil)
       return {path, device} if device.feature_id(i.to_u8) == GKEYS_ID
     end
   end
-  abort "No supported devices found!"
+  Log.fatal { "No supported devices found!" }
+  exit 1
 end
 
 private def get_event(hidraw_path)
   File.read("/sys/class/hidraw/#{hidraw_path.split('/')[2]}/device/uevent") =~ /^HID_UNIQ=(.*?)$/m
   # Regex matches kernel ID, glob to find event handle
-  Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]? ||
-    abort "Could not find keyboard event handle, is your device initialized correctly?"
+  if handle = Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]?
+    handle
+  else
+    Log.fatal { "Could not find keyboard event handle, is your device initialized correctly?" }
+    exit 1
+  end
 end
 
 class Gkeybind::Daemon
@@ -38,6 +46,7 @@ class Gkeybind::Daemon
   @uinput : Evdev::UinputDevice
 
   def initialize(@config)
+    Log.debug { "Initializing daemon" }
     lookup = KeyLookup.new(@config.keyboard_layout)
 
     @config.actions.each_value do |actions|
@@ -58,13 +67,17 @@ class Gkeybind::Daemon
   end
 
   def start
+    Log.debug { "Starting daemon" }
     @keyleds.custom_gkeys(true)
     @keyleds.on_gkey do |type, keys|
       next unless type.gkey?
 
+      Log.debug { "G-key event detected: #{keys}" }
+
       @last_keys.zip(keys).each_with_index do |(last, current), i|
         # process keydown events
         if !last && current && (actions = @config.actions["g#{i + 1}"]?)
+          Log.debug { "Executing actions #{actions} for G#{i + 1}" }
           spawn do
             actions.each(&.run(@uinput))
           end
@@ -79,6 +92,7 @@ class Gkeybind::Daemon
       sleep @config.poll_rate.milliseconds
     end
   ensure
+    Log.debug { "Stopping daemon" }
     @keyleds.custom_gkeys(false)
     @keyleds.close
   end
