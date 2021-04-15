@@ -7,12 +7,18 @@ require "./key_lookup"
 
 APP_ID = 1_u8
 
+GKEYS_ID = Keyleds::Strings::FEATURE_NAMES.key_for("gkeys")
+
 private def get_keyleds(config_path = nil)
   search = Dir.glob("/dev/hidraw*")
   search.unshift(config_path) if config_path
   search.each do |path|
     # If invalid device, try the next path
-    return {path, Keyleds::Device.new(path, APP_ID)} rescue next
+    device = Keyleds::Device.new(path, APP_ID) rescue next
+    device.feature_count.times do |i|
+      # Make sure device supports G-keys so we don't get errors later on
+      return {path, device} if device.feature_id(i.to_u8) == GKEYS_ID
+    end
   end
   abort "No supported devices found!"
 end
