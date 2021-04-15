@@ -88,6 +88,8 @@ class Gkeybind::Daemon
     end
 
     until @stopped
+      # TODO: Sometimes this call stack overflows inside keyleds, but there's no recursion and I can't figure out why
+      # It also seems kind of unpredictable and is hard to reproduce, something with keyleds_get_feature_index
       @keyleds.flush
       sleep @config.poll_rate.milliseconds
     end
