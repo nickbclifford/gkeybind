@@ -8,9 +8,9 @@ StartLimitBurst=3
 [Service]
 ExecStart=gkeybind
 # In case devices aren't initialized when the service starts
-# Exit code 1 is for internal and system errors
-# User/input errors will have different codes, we don't want to restart on those
-RestartForceExitStatus=1
+# The following are all known user errors
+Restart=on-failure
+RestartPreventExitStatus=64 65 66
 RestartSec=10s
 
 [Install]
