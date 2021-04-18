@@ -30,7 +30,7 @@ end
 
 begin
   Log.debug { "Opening and parsing config at #{config_path}" }
-  config = File.open(config_path) {|f| Gkeybind::Config.from_yaml(f)}
+  config = File.open(config_path) { |f| Gkeybind::Config.from_yaml(f) }
 rescue err : YAML::ParseException
   Log.fatal(exception: err) { "Error parsing config!" }
   exit 65 # EX_DATAERR
@@ -41,7 +41,7 @@ end
 
 daemon = Gkeybind::Daemon.new(config)
 
-trap = ->(signal : Signal){ daemon.stop }
+trap = ->(signal : Signal) { daemon.stop }
 
 Signal::INT.trap(&trap)
 Signal::TERM.trap(&trap)

@@ -64,7 +64,7 @@ class Gkeybind::KeyLookup
     # NOTE: XKB keycode values are 8 more than their evdev values
 
     # Generate all possible modifier combinations
-    (0..MODIFIERS.size).flat_map {|i| MODIFIERS.combinations(i)}.each do |mods|
+    (0..MODIFIERS.size).flat_map { |i| MODIFIERS.combinations(i) }.each do |mods|
       mods.each do |mod|
         LibXKBCommon.state_update_key(state, mod + 8, LibXKBCommon::KeyDirection::Down)
       end

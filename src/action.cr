@@ -42,7 +42,7 @@ module Gkeybind
 
     # Initialize on startup to avoid recalculating lookups every time
     def init(lookup : KeyLookup)
-      @keys = text.chars.map {|c| lookup.from_char(c)}
+      @keys = text.chars.map { |c| lookup.from_char(c) }
     end
 
     def run(uinput)
@@ -61,7 +61,7 @@ module Gkeybind
 
     # Initialize on startup in case we have bad names, then they'll fail fast
     def init(lookup : KeyLookup)
-      @codes = keys.split('+').flat_map {|n| lookup.from_name(n)}
+      @codes = keys.split('+').flat_map { |n| lookup.from_name(n) }
     end
 
     def run(uinput)

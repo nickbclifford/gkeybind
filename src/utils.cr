@@ -2,6 +2,7 @@ require "evdev"
 
 module Gkeybind
   alias Key = Evdev::Codes::Key
+
   module Utils
     def self.keys_updown(uinput : Evdev::UinputDevice, keys : Array(Key))
       keys.each do |key|
