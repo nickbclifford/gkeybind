@@ -92,7 +92,11 @@ class Gkeybind::KeyLookup
   def from_name(name : String)
     sym = LibXKBCommon.keysym_from_name(name, LibXKBCommon::KeysymFlags::NoFlags)
     abort "Invalid key name #{name}!", 65 if sym == 0
-    @hash[sym]
+    if key = @hash[sym]?
+      key
+    else
+      abort "Key #{name} is not in your currently selected layout!", 65
+    end
   end
 
   private def iter(keymap, &cb : UInt32 ->)
