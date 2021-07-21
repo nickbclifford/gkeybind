@@ -60,6 +60,7 @@ class Gkeybind::Daemon
     @last_keys = BitArray.new(@keyleds.gkeys_count.to_i)
 
     # File handle is only necessary to copy attributes, can safely close immediately
+    # TODO: investigate creating custom device, might be able to press other keys?
     evdev = File.open(get_event(hidraw)) { |f| Evdev::Device.from_file(f) }
     evdev.name = "gkeybind virtual device"
     @uinput = Evdev::UinputDevice.new(evdev)
