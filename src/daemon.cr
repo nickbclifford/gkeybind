@@ -6,6 +6,7 @@ require "keyleds"
 
 require "./config"
 require "./key_lookup"
+require "./utils"
 
 APP_ID = 1_u8
 
@@ -23,8 +24,7 @@ private def get_keyleds(config_path = nil)
       return {path, device} if device.feature_id(i.to_u8) == GKEYS_ID
     end
   end
-  Log.fatal { "No supported devices found!" }
-  exit 1
+  abort_log "No supported devices found!", 1
 end
 
 private def get_event(hidraw_path)
@@ -33,8 +33,7 @@ private def get_event(hidraw_path)
   if handle = Dir.glob("/dev/input/by-id/*#{$1}-event-kbd")[0]?
     handle
   else
-    Log.fatal { "Could not find keyboard event handle, is your device initialized correctly?" }
-    exit 1
+    abort_log "Could not find keyboard event handle, is your device initialized correctly?", 1
   end
 end
 

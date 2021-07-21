@@ -1,4 +1,10 @@
 require "evdev"
+require "log"
+
+macro abort_log(message, code)
+  Log.fatal { {{message}} }
+  exit {{code}}
+end
 
 module Gkeybind
   alias Key = Evdev::Codes::Key

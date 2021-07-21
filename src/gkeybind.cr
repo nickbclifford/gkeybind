@@ -4,6 +4,7 @@ require "yaml"
 
 require "./config"
 require "./daemon"
+require "./utils"
 
 config_path = "/etc/gkeybind.yml"
 
@@ -35,11 +36,15 @@ rescue err : YAML::ParseException
   Log.fatal(exception: err) { "Error parsing config!" }
   exit 65 # EX_DATAERR
 rescue File::NotFoundError
-  Log.fatal { "Unable to open config file #{config_path}!" }
-  exit 66 # EX_NOINPUT
+  abort_log "Unable to open config file #{config_path}!", 66 # EX_NOINPUT
 end
 
-daemon = Gkeybind::Daemon.new(config)
+begin
+  daemon = Gkeybind::Daemon.new(config)
+rescue err
+  Log.fatal(exception: err) { "Failed to initialize gkeybind!" }
+  exit 65
+end
 
 trap = ->(signal : Signal) { daemon.stop }
 
